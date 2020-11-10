@@ -46,15 +46,16 @@ FileObject loader_load_file(char* fp){
 	o->fp=NULL;
 	o->ln=0;
 	o->dt=NULL;
-	uint32_t fpln=0;
 	INFO("Trying '%s'\n",fp);
 	FILE* f=NULL;
 	errno_t e=fopen_s(&f,fp,"rb");
 	if (e!=0){
 		if (e!=ENOENT){
 			ERROR("fopen_s returned Error Code '%u'\n",e);
+			free(o);
 			return NULL;
 		}
+		uint32_t fpln=0;
 		for (uint32_t i=0;i<loader_search_path_list.ln;i++){
 			if (fpln==0){
 				while (*(fp+fpln)!=0){
@@ -73,7 +74,7 @@ FileObject loader_load_file(char* fp){
 			}
 			*(o->fp+j)=0;
 			INFO("Trying '%s'\n",o->fp);
-			errno_t e=fopen_s(&f,o->fp,"rb");
+			e=fopen_s(&f,o->fp,"rb");
 			if (e==0){
 				char* tmp=o->fp;
 				o->fp=malloc(_MAX_PATH*sizeof(char));
@@ -92,6 +93,7 @@ FileObject loader_load_file(char* fp){
 				continue;
 			}
 			ERROR("fopen_s returned Error Code '%u'\n",e);
+			free(o);
 			return NULL;
 		}
 	}

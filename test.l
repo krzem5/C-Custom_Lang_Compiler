@@ -30,5 +30,5 @@ tCls=TestClass("D");
 
 
 
-d=tCls* = 729;
+d=*tCls = 729;
 tCls*/=5;
