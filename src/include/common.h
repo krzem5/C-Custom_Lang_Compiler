@@ -17,8 +17,12 @@
 	do{ \
 		if (!(x)){ \
 			printf("%s: Line %u (%s): %s: Assertion Failed\n",__FILE__,__LINE__,__func__,#x); \
+			raise(SIGABRT); \
 		} \
 	} while (0)
+#define INFO(f,...) printf("[INFO]  " f,__VA_ARGS__)
+#define WARN(f,...) printf("[WARN]  " f,__VA_ARGS__)
+#define ERROR(f,...) fprintf(stderr,"[ERROR] " f,__VA_ARGS__)
 
 
 

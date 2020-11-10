@@ -19,7 +19,7 @@ del *.exp
 del *.ilk
 del *.idb
 cls
-compiler.exe
+compiler.exe test.l -I"../"
 :end
 cd ../
 set INCLUDE=%_INCLUDE%

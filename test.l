@@ -1,5 +1,7 @@
-import math
+import math;
 import "other-imp.l".df as duid, "bld/d378diuih/dpieo.l"
+
+
 
 export class TestClass(BaseObject){
 	public export TestClass(nm,?snm){
