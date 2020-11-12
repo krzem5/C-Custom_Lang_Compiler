@@ -85,7 +85,57 @@ ASTObject ast_parse_file(FileObject fo){
 	INFO("Starting AST Parsing of File '%s'\n",fo->fp);
 	while (t.t!=AST_TOKEN_TYPE_EOF){
 		assert(t.t!=AST_TOKEN_TYPE_UNKNOWN);
+		bool nt=true;
 		switch (t.t){
+			default:
+				assert(!"Not Implemented!");
+				break;
+			case AST_TOKEN_TYPE_UNKNOWN:
+				assert(!"Not Implemented!");
+				break;
+			case AST_TOKEN_TYPE_KEYWORD:
+				assert(!"Not Implemented!");
+				break;
+			case AST_TOKEN_TYPE_MODIFIER:
+				assert(!"Not Implemented!");
+				break;
+			case AST_TOKEN_TYPE_STRING:
+			case AST_TOKEN_TYPE_CHAR:
+			case AST_TOKEN_TYPE_INT:
+			case AST_TOKEN_TYPE_FLOAT:
+			case AST_TOKEN_TYPE_IDENTIFIER:
+			case AST_TOKEN_TYPE_OPERATOR:
+				ast_parse_expression(fo,&t,AST_EXPRESSION_END_TYPE_WHITESPACE_OR_SEMICOLON);
+				nt=false;
+				break;
+			case AST_TOKEN_TYPE_WHITESPACE:
+				break;
+			case AST_TOKEN_TYPE_ERROR:
+				assert(!"Not Implemented!");
+				break;
+		}
+		if (nt==true){
+			print_token(t);
+			assert(next_token(fo,&t)==0);
+		}
+	}
+	return o;
+}
+
+
+
+ASTExpression ast_parse_expression(FileObject fo,ASTToken* t,enum AST_EXPRESSION_END_TYPE et){
+	ASTExpression o=malloc(sizeof(struct _AST_EXPRESSION));
+	o->t=AST_EXPRESSION_TYPE_EMPTY;
+	o->bl=0;
+	o->b=NULL;
+	size_t i=0;
+	ASTExpression co=o;
+	while (true){
+		if ((et==AST_EXPRESSION_END_TYPE_WHITESPACE_OR_SEMICOLON&&(t->t==AST_TOKEN_TYPE_WHITESPACE||(t->t==AST_TOKEN_TYPE_OPERATOR&&t->dt.op==AST_TOKEN_OPERATOR_SEMICOLON)))){
+			break;
+		}
+		switch (t->t){
 			default:
 				assert(!"Not Implemented!");
 				break;
@@ -111,8 +161,162 @@ ASTObject ast_parse_file(FileObject fo){
 				assert(!"Not Implemented!");
 				break;
 			case AST_TOKEN_TYPE_IDENTIFIER:
+				if (co->t==AST_EXPRESSION_TYPE_EMPTY){
+					co->t=AST_EXPRESSION_TYPE_CONST;
+					co->a.t=AST_EXPRESSION_ARG_TYPE_IDENTIFIER;
+					co->a.v.id.il=t->dt.id.il;
+					co->a.v.id.i=malloc((t->dt.id.il+1)*sizeof(char));
+					for (size_t j=0;j<t->dt.id.il+1;j++){
+						*(co->a.v.id.i+j)=*(t->dt.id.i+j);
+					}
+				}
+				else{
+					assert(!"Not Implemented!");
+				}
+				break;
 			case AST_TOKEN_TYPE_OPERATOR:
-				ast_parse_expression(fo,&t);
+				if (t->dt.op==AST_TOKEN_OPERATOR_LEFT_PARENTHESIS){
+					// if (co->t==AST_EXPRESSION_TYPE_CONST){
+					// 	co->t=AST_EXPRESSION_TYPE_CALL;
+					// 	assert(co->bl==0);
+					// 	co->bl=1;
+					// 	co->b=malloc(sizeof(struct _AST_EXPRESSION_ARG));
+					// 	co->b->t=AST_EXPRESSION_ARG_TYPE_LIST;
+					// }
+					// else{
+					// 	assert(!"Not Implemented!");
+					// }
+					assert(!"Not Implemented!");
+					break;
+				}
+				ASTToken nt;
+				enum AST_EXPRESSION_TYPE op=AST_EXPRESSION_TYPE_UNKNOWN;
+				switch (t->dt.op){
+					default:
+						assert(!"Not Implemented!");
+						break;
+					case AST_TOKEN_OPERATOR_AMP:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_AT:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_CIRCUMFLEX:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_CLOSE_BRACKET:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_COLON:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_COMMA:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_EQUALS:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_EXCLAMATION_MARK:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_GRATER:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_LEFT_BRACES:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_LESS:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_MINUS:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_MODULO:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_OPEN_BRACKET:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_PERIOD:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_PLUS:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_QUESTION_MARK:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_RIGHT_BRACES:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_RIGHT_PARENTHESIS:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_SEMICOLON:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_SLASH:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_STAR:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_TILDA:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+					case AST_TOKEN_OPERATOR_VERTICAL_BAR:
+						nt._off=t->_off;
+						assert(next_token(fo,&nt)==0);
+						assert(0);
+						break;
+				}
+				assert(op>AST_EXPRESSION_TYPE_CONST);
 				break;
 			case AST_TOKEN_TYPE_WHITESPACE:
 				assert(!"Not Implemented!");
@@ -121,187 +325,10 @@ ASTObject ast_parse_file(FileObject fo){
 				assert(!"Not Implemented!");
 				break;
 		}
-		print_token(t);
-		assert(next_token(fo,&t)==0);
+		assert(next_token(fo,t)==0);
+		print_token(*t);
 	}
-	return o;
-}
-
-
-
-ASTExpression ast_parse_expression(FileObject fo,ASTToken* t){
-	ASTExpression o=malloc(sizeof(struct _AST_EXPRESSION));
-	o->t=AST_EXPRESSION_TYPE_EMPTY;
-	o->bl=0;
-	o->b=NULL;
-	switch (t->t){
-		default:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_UNKNOWN:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_STRING:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_CHAR:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_INT:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_FLOAT:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_KEYWORD:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_MODIFIER:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_IDENTIFIER:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_OPERATOR:
-			ASTToken nt;
-			switch (t->dt.op){
-				default:
-					assert(!"Not Implemented!");
-					break;
-				case AST_TOKEN_OPERATOR_AMP:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_AT:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_CIRCUMFLEX:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_CLOSE_BRACKET:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_COLON:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_COMMA:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_EQUALS:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_EXCLAMATION_MARK:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_GRATER:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_LEFT_BRACES:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_LEFT_PARENTHESIS:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_LESS:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_MINUS:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_MODULO:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_OPEN_BRACKET:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_PERIOD:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_PLUS:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_QUESTION_MARK:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_RIGHT_BRACES:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_RIGHT_PARENTHESIS:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_SEMICOLON:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_SLASH:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_STAR:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_TILDA:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-				case AST_TOKEN_OPERATOR_VERTICAL_BAR:
-					nt._off=t->_off;
-					assert(next_token(fo,&nt)==0);
-					assert(0);
-					break;
-			}
-			break;
-		case AST_TOKEN_TYPE_WHITESPACE:
-			assert(!"Not Implemented!");
-			break;
-		case AST_TOKEN_TYPE_ERROR:
-			assert(!"Not Implemented!");
-			break;
-	}
+	assert(i==0);
 	return o;
 }
 
